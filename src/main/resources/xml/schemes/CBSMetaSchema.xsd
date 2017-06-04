@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://xml.netbeans.org/schema/cbsschema"
+            xmlns:tns="http://xml.netbeans.org/schema/cbsschema">
+
+    <xsd:element name="entity_meta">
+        <xsd:annotation>
+            <xsd:documentation> Element tag definise entitet sistema koji je odredjen paramterima u
+                xml konfiguraciji.
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="meta" type="tns:metaType" minOccurs="1" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation> Unutar meta taga definisu se sistemski parametri kao sto
+                            su nazivi polja, podaci iz baze, operacije i sl. 
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="GUImeta" type="tns:guiType" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation> Definise gui parametre entiteta. </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <!-- META -->
+
+    <xsd:complexType name="metaType">
+        <xsd:sequence maxOccurs="1" minOccurs="1">
+            <xsd:element name="entity">
+                <xsd:annotation>
+                    <xsd:documentation> Kontejner xml parametara za entitet. </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:sequence minOccurs="1" maxOccurs="unbounded">
+                            <xsd:element name="field" type="tns:fieldType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Definise polja entiteta, njihov naziv, odnos
+                                        sa bazom i drugim elementima i poljima. </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xsd:element name="sibling" type="tns:siblingType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Predstavlja veze sa drugim tabelama (foreign
+                                        key) </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xsd:element name="child" type="tns:childType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Predstavlja veze sa decom objektima
+                                    </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+                            <xsd:element name="operation" type="tns:operationType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Operacije koje se mogu izvrsiti nad
+                                        entitetom poput ucitavanja siblinga, lookup polja,
+                                        tranzicija itd. </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence minOccurs="0" maxOccurs="1">
+                            <xsd:element name="search-options" type="tns:searchoptionsType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Search opcije koje se genericki iscrtavaju
+                                        na ekranu. Polja unutar ovog taga moraju postojati i u
+                                        GUIMeta tagu. </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence minOccurs="0" maxOccurs="1">
+                            <xsd:element name="SQLCommand" type="tns:sqlCommandType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Search opcije koje se genericki iscrtavaju
+                                        na ekranu. Polja unutar ovog taga moraju postojati i u
+                                        GUIMeta tagu. </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:sequence>
+                    <xsd:attribute name="name" type="xsd:string" use="required"/>
+                    <xsd:attribute name="class" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Klasa koja postoji za posmatrani entitet. Mora biti
+                                napisan punom putanjom npr. 'businesslogic.Artikl'.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="table" type="xsd:string" default="[cbspayroll].[dbo].[">
+                        <xsd:annotation>
+                            <xsd:documentation> Naziv tabele u bazi sa shemom ili nazivom baze. Npr.
+                                '[cbspayroll].[dbo].[artikl]'. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="validate" type="tns:smallbool">
+                        <xsd:annotation>
+                            <xsd:documentation> Da li entitet ima posebnu validaciju. Ako ima,
+                                posebna klasa za ovaj entitet mora implementirati 'IValidate'
+                                interfejs. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="init-method" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Metod koji inicijalizuje novi entitet.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="entity-order" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Definise polja po kojima se vrsi sortiranje u
+                                prikazu. Npr. 'Naziv,1;Vrsta,2' sto znaci sledece: vrsi se
+                                sortiranje po koloni 'Naziv' i to rastucim redosledom a zatim
+                                sortiranje po koloni 'Vrsta' u opadajucem redosledu.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="print-method" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Naziv operacije koja vrsi stampu.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="custom-load" type="tns:smallbool">
+                        <xsd:annotation>
+                            <xsd:documentation> Definise da li se koristi posebno ucitavanje ili ne.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="custom-search" type="tns:smallbool">
+                        <xsd:annotation>
+                            <xsd:documentation> Definise da li se koristi posebno cuvanje ili ne.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="entity-type" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Koristi se da bi se grupisali razliciti eniteti nad
+                                kojima se izvrsavaju zajednicke funkcije, operacije, proracuni itd.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="use-sql-load" type="tns:smallbool">
+                        <xsd:annotation>
+                            <xsd:documentation> Posebno ucitavanje podataka definisano sql upitom u
+                                sqlCommands fajlu. Da bi se izvrsilo, mora postojati definicija u
+                                sqlCommand-u za posmatrani entitet. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="virtual" type="tns:smallbool">
+                        <xsd:annotation>
+                            <xsd:documentation> Znaci da entitet nema svoju tabelu u bazi. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+					
+                    <xsd:attribute name="custom-store" type="tns:smallbool">
+                    </xsd:attribute>
+					
+                    <xsd:attribute name="delete-reference-entity" type="xsd:string">
+                    </xsd:attribute>
+					
+                    
+					
+                    <xsd:attribute name="pre-store-operation" type="xsd:string">
+                    </xsd:attribute>
+					
+                    <xsd:attribute name="service" type="xsd:string">
+                    </xsd:attribute>
+					
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+
+    </xsd:complexType>
+
+    <!-- GUI META -->
+
+    <xsd:complexType name="guiType">
+        <xsd:sequence>
+            <xsd:element name="entity" maxOccurs="1">
+                <xsd:annotation>
+                    <xsd:documentation> Entitet za koji se definisu gui meta podaci.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:sequence maxOccurs="unbounded">
+                            <xsd:element name="field" type="tns:guiFieldType">
+                                <xsd:annotation>
+                                    <xsd:documentation> Polje za koje se definisu gui meta podaci za
+                                        ovaj entitet. </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence maxOccurs="unbounded">
+                            <xsd:element name="child" type="tns:guiChildType" minOccurs="0">
+                                <xsd:annotation>
+                                    <xsd:documentation> Dete posmatranog eniteta koje se zeli
+                                        prikazati na ekranu kod kojeg se vrsi prikaz u obliku
+                                        Master/Detail forme. </xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:sequence maxOccurs="unbounded">
+                            <xsd:element name="extern-control" type="tns:externType" minOccurs="0">
+                                <xsd:annotation>
+                                    <xsd:documentation> Ekterna kotrola koja sluzi za prikaz odredjenog polja
+                                        ili kombinacije polja. Predstavlja MXML komponentu ciju je punu putanju 
+                                        nepohodno navesti. Sama externa kontrola tj. mxml mora imati seter i geter
+                                        za data provider-a i logiku za njegovu izmenu.</xsd:documentation>
+                                </xsd:annotation>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:sequence>
+                    <xsd:attribute name="name" type="xsd:string" use="required">
+                        <xsd:annotation>
+                            <xsd:documentation> Naziv entiteta. Odgovara nazivu definisanom u
+                                'element' tagu atributom 'name'. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="layout" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Definise naziv posebnog kontejnera na strani flexa
+                                koji se koristi za smestanje i saspored polja posmatranog eniteta.
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="filter-default" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Naziv polja po kojem se vrsi filtriranje podataka
+                                kad se kuca tekst nad 'ViewGrid'-om. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="caption" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Tekst koji se ispisuje na vrhu panela u kojem 
+                                je prikazan posmatrani entitet.</xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+
+                    <xsd:attribute name="deletable" type="tns:smallbool" />
+
+                    <xsd:attribute name="editable" type="tns:smallbool">
+                    </xsd:attribute> 
+
+                    <xsd:attribute name="entity-type" type="xsd:string">
+                    </xsd:attribute> 
+
+                    <xsd:attribute name="insertable" type="tns:smallbool">
+                    </xsd:attribute> 	
+
+                    <xsd:attribute name="multiple-selection" type="tns:smallbool">
+                    </xsd:attribute> 
+                    
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <!-- FIELD, SIBLING, CHILD, OPERATION, SEARCH-OPTIONS -->
+
+    <!--  FIELD  -->
+
+    <xsd:complexType name="fieldType">
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation> Naziv polja. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="db-name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv polja u bazi. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="type" type="tns:dataType">
+            <xsd:annotation>
+                <xsd:documentation> Tip podatka ovog polja. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="default" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Defnise predefinisanu vrednost polja koja ce se ucitati pri
+                    inicijalizaciji entiteta ako ne postoji vrednost u bazi. U odredjenim
+                    situacijama se koristi za popunjavanje nepopunjenog polja pre njegovog pisanja u
+                    bazu. Takodje, moze imati i specijalne vrednosti u zavisnosti od konteksta i
+                    tipa polja kao sto je vrednost 'now' za polje tipa 'Date'. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="validate-method" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Operacija koja se poziva pri pokusaju napustanja polja.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="validate-parameters" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv polja po kojem se vrsi filtriranje podataka kad se kuca
+                    tekst nad 'ViewGrid'-om. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv tabele sa kojom ovo polje ima vezu. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookupid" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv polja u drugoj tabeli sa kojom je ovo polje povezano.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup-trans" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv polja u drugoj tabeli cija vrednost treba da se prevuce na
+                    neko polje posmatranog entiteta. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup-search" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv 'View' eniteta koji se koristi za pretrazivanje
+                    posmatranog entieta. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup-set" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Parametri koji se prosledjuju 'lookup-search'-u. Unose se u
+                    posebnom formatu i to na sledeci nacin: NazivPoljaLookupIliLookupSearchEntiteta
+                    = @PoljePosmatranogEntiteta | .@PoljeRoditeljaPosmatranogEntiteta | 'Konstanta'.
+                    Moze se uneti i vise gore navedenih jendakosti koje se odvajaju znakom ';'.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="key-field" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv polja posmatranog eniteta na koje se prenosi vrednost
+                    povezanog polja neke druge tabele. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup-alias" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Ako se dva puta poziva lookup za isti entitet koristi se alias da 
+                    se ne bi spajale iste tabele dva puta. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="persistent" type="tns:bool">
+            <xsd:annotation>
+                <xsd:documentation> Definise da li je ovo polje perzistentno ili nije. Ako nije to
+                    znaci da se ovo polje popunjava vrednoscu iz neke druge tabele a to popunjavanje
+                    se najcesce vrsi pomocu 'lookup' atributa nekog drugog polja.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="increment" type="tns:incrementType">
+            <xsd:annotation>
+                <xsd:documentation> Vrsta inkrementa za polje. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="join-type" type="tns:joinType">
+            <xsd:annotation>
+                <xsd:documentation> Tip spajanja sa drugim tabelama. </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="primary-key" type="tns:bool">
+            <xsd:annotation>
+                <xsd:documentation> Definise da li je ovo polje primarni kljuc ili nije.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="secondary-key" type="tns:bool">
+            <xsd:annotation>
+                <xsd:documentation> Definise da li je ovo polje sekundarni kljuc ili nije.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="fixed-length" type="xsd:int">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Definise duzinu numeric char-a.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+		
+        <xsd:attribute name="delete-reference-key" type="xsd:string">
+        </xsd:attribute>
+		
+        <xsd:attribute name="lookup-key-field" type="xsd:string">
+        </xsd:attribute>
+		
+        <xsd:attribute name="session-value" type="xsd:string">
+        </xsd:attribute>
+		
+        <xsd:attribute name="transient" type="tns:bool">
+        </xsd:attribute>
+		
+    </xsd:complexType>
+
+    <!--  SIBLING  -->
+
+    <xsd:complexType name="siblingType">
+        <xsd:sequence>
+            <xsd:element name="key-map">
+                <xsd:annotation>
+                    <xsd:documentation> Definise polja koja se medjusobno uparuju.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:attribute name="field-name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Polje iz posmatranog eniteta koje se koristi za
+                                uparivanje. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="related-field-name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Polje iz povezanog eniteta koje se koristi za
+                                uparivanje. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv entiteta koji predstavlja sibling posmatranog entiteta.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+		
+        <xsd:attribute name="entity-name" type="xsd:string">
+        </xsd:attribute>
+		
+    </xsd:complexType>
+
+    <!--  CHILD  -->
+
+    <xsd:complexType name="childType">
+        <xsd:sequence maxOccurs="unbounded">
+            <xsd:element name="key-map">
+                <xsd:annotation>
+                    <xsd:documentation> Definise polja koja se medjusobno uparuju.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:attribute name="field-name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Polje iz posmatranog eniteta koje se koristi za
+                                uparivanje. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="related-field-name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Polje iz povezanog eniteta koje se koristi za
+                                uparivanje. </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> Naziv entiteta koji predstavlja sibling posmatranog entiteta.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!--  OPERATION  -->
+
+    <xsd:complexType name="operationType">
+        <xsd:sequence minOccurs="0" maxOccurs="unbounded">
+            <xsd:element name="key-map">
+                <xsd:annotation>
+                    <xsd:documentation> Definise polja koja se medjusobno uparuju.
+                    </xsd:documentation>
+                </xsd:annotation>
+                <xsd:complexType>
+                    <xsd:attribute name="field-name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Polje iz posmatranog eniteta koje se koristi za
+                                uparivanje. 
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+                    <xsd:attribute name="related-field-name" type="xsd:string">
+                        <xsd:annotation>
+                            <xsd:documentation> Polje iz povezanog eniteta koje se koristi za
+                                uparivanje. 
+                            </xsd:documentation>
+                        </xsd:annotation>
+                    </xsd:attribute>
+					
+                    <xsd:attribute name="key-type" type="xsd:string" use="optional" default="input" >
+                    </xsd:attribute> 
+					
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Naziv operacije.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="operationType" type="tns:operations">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Tip operacije.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="siblingName" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Naziv siblinga.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="class" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Koristi se ako se ovom operacijom poziva funkcija koja nije definisana
+                    u klasi posmatranog entiteta. 
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>    
+        <xsd:attribute name="use-select" type="tns:smallbool" use="optional">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Ako u operation tagu ucestvuju polja drugog entiteta koja tamo nisu perzistentna,
+                    pomocu ove komande se iskazuje da se ta operacija ne ubacuje u sql upit vec se 
+                    koriste lookup atributi field taga za povezivanje tabela.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>  
+        <xsd:attribute name="place" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation> 
+                    Odredjuje gde je definisana operacija. Moze imati sledece vrednosti: parser, module, print
+                    ili naziv web servisa koji se poziva.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>  
+		
+        <xsd:attribute name="src" type="xsd:string" use="optional" >
+        </xsd:attribute> 	
+		
+    </xsd:complexType>
+
+    <!-- SEARCHOPTIONS -->
+
+    <xsd:complexType name="searchoptionsType">
+        <xsd:complexContent>
+            <xsd:sequence maxOccurs="unbounded">
+                <xsd:element name="field" type="tns:searchFieldType">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Polje koje ucestvuje u pretrazivanju.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="order-by" type="xsd:string">
+                    <xsd:attribute name="num-of-fields" type="xsd:string">
+                    </xsd:attribute>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexContent>	
+        <xsd:attribute name="field" type="xsd:string" use="optional">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Ovaj atribute se koristi kao podrska starom sistemu pretrazivanje. 
+                    Kao vrednost unese se nazivi polja odvojeni zarezom i to bez razmaka.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="field-name" type="xsd:string" >
+        </xsd:attribute>
+    </xsd:complexType>
+	
+    <!-- SQLCommand -->
+	
+    <xsd:complexType name="sqlCommandType">
+        <xsd:attribute name="name" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="src" type="xsd:string">
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!-- GUIFIELD -->
+
+    <xsd:complexType name="guiFieldType">
+        <xsd:attribute name="name" type="xsd:string" use="required">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Naziv polja. Mora odgovarati nazivu polja definiasnom u 'meta' tagu. 
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="caption" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Tekst za prikaz ovog polja u gui-u na obicnoj formi. Ako nije definisan 
+                    uzima se tekst iz 'name' atributa.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="caption-short" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Tekst za prikaz ovog polja u gui-u u gridu. Ako nije definisan uzima se tekst
+                    iz 'caption' atributa.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="display-list" type="tns:bool">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Definise da li se polje vidi u ViewGrid komponenti.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="field-rep" type="tns:fieldRepType">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Definise nacin prikazivanja polja. 
+                    opt-opcioni unos,
+                    req-obavezan unos,
+                    disp-prikazuje se, ali ne moze da se menja,
+                    hid-skriveno
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup-set" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Parametri koji se prosledjuju 'lookup-search'-u. 
+                    Unose se u posebnom formatu i to na sledeci nacin: NazivPoljaLookupIliLookupSearchEntiteta = @PoljePosmatranogEntiteta | .@PoljeRoditeljaPosmatranogEntiteta | 'Konstanta'. 
+                    Moze se uneti i vise gore navedenih jednakosti koje se odvajaju znakom ' ; '.				
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    naziv drugog entiteta u metapodacima, tj naziv tabele sa kojom ovo polje ima vezu.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="lookup-search" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Naziv 'View' entiteta koji se koristi za pretrazivanje posmatranog entiteta.				
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="default" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Vrednost kojom ce biti popunjeno polje na strani flexa. Vrednosti koje 
+                    se mogu uneti su iste kao i vrednosti ovog atributa u 'meta' tagu.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="default-value" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Deprecated.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="section" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Vezan je za poseban 'layout' ako je definisan za ovaj entitet. Kao vrednost unosi
+                    se vrednost atributa 'name' izabranog kontejnera na strani flexa.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="column-width" type="xsd:integer">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Sirina kolone u 'dataGridu' koja predstavlja ovo polje.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="filter" type="tns:filterType">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Filter koji se koristi u prikazu.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="footer" type="tns:smallbool">
+            <xsd:annotation>
+                <xsd:documentation> Odredjuje da li se ispod ovog polja vrsi sumiranje vrednosti.</xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="footer-func" type="tns:footerFuncType" default="sum"/>
+        <xsd:attribute name="authLevel" type="xsd:integer" default="1"/>
+		
+        <xsd:attribute name="control-type" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="grid-edit-selected" type="xsd:string">
+        </xsd:attribute>
+        <xsd:attribute name="popup-display-list" type="tns:bool"/>
+    </xsd:complexType>
+
+    <!-- GUICHILD -->
+
+    <xsd:complexType name="guiChildType">
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Naziv deteta. Mora odgovarati nazivu definisanom u 'meta' tagu.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="section" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Definise gde se u posebnom 'layout'-u u gui-u nalazi dete.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="caption" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Tekst za prikaz vezan za ovo dete. Tekst se prikazuje iznad data grida kojim se predstavlja dete. 
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="show" type="tns:smallbool">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Definise da li ce se dete prikazati ili ne.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+    
+    <!-- GUIEXTERNALCONTROL -->
+    
+    <xsd:complexType name="externType">
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Naziv kontrole. Mora sadrzati pun naziv tj. putanju do same kontrole.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="section" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Definise gde se u posebnom 'layout'-u u gui-u nalazi dete.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>        
+    </xsd:complexType>
+
+    <!-- SEARCHFIELD -->
+
+    <xsd:complexType name="searchFieldType">
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Naziv polja. Mora odgovarati nazivu polja definisanom u 'meta' tagu. Takodje
+                    moze se unositi vrednost u sledecem formatu: NazivDeteta.NazivPoljaDeteta .
+                    U ovo slucaju izabrano polje deteta mora biti definisano u njegovom 'GUImeta' tagu.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="control-type" type="tns:searchControllType">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Vrsta kontrole kojom se zeli iscrtati ovo polje u formi za pretrazivanje.
+                    Predefinisana vrednost je 'textField' i ne mora se unostiti.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="is-set" type="tns:smallbool">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Definise da li se ovo polje predstavlja kao skup vrednosti ili kao pojedinacna vrednost.
+                    Predefinisana vrednost je 'true' i ne mora se unositi.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!-- SEARCHPARAM -->
+
+    <xsd:complexType name="searchParamType">
+        <xsd:attribute name="name" type="xsd:string">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Naziv polja za kojeg se definisu parametrizovane vrednosti. Mora odgovarati
+                    nazivu polja definisanom u 'meta' tagu.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="values" type="tns:searchParamValuesType">
+            <xsd:annotation>
+                <xsd:documentation>
+                    Vrednosti koje se koriste kao parametri. Unose se kao niz vrednosti odvojenih znakom ';'.
+                    Na kraj sloga se ne stavlja znak ';'. Npr: 'knjiga' ili 'knjiga;sveska;olovka'.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!-- KRAJ -->
+
+    <!-- ENUMERACIJE -->
+
+    <xsd:simpleType name="operations">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="sibling">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        TODO
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="initialize">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Definise da je ovo operacija za inicijalizaciju. Ako je izabran ovaj tip
+                        operacije onda ova operacija mora biti pozvana iz 'init-method' atributa.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="function">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Definise operaciju kao poziv funkcije. Ova funkcija se mora nalaziti u klasi koja je 
+                        definisana za ovaj entitet ili u 'class' atributu ove operacije.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>            
+            <xsd:enumeration value="xquery">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Definise operaciju koja koristi XQuery.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="lookupoperation">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Analogno lookup-u sa izuzetkom sto se mogu povezivati polja po zelji.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="check">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        TODO
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="document">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        TODO
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="bool">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="True"/>
+            <xsd:enumeration value="False"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="smallbool">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="true"/>
+            <xsd:enumeration value="false"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="dataType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="String"/>
+            <xsd:enumeration value="Double"/>
+            <xsd:enumeration value="Integer"/>
+            <xsd:enumeration value="Date"/>
+            <xsd:enumeration value="DateTime"/>
+            <xsd:enumeration value="NumericChar"/>
+            <xsd:enumeration value="Boolean"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="fieldRepType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="hid">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Polje ce biti skriveno.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="disp">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Polje ce biti prikazano.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="opt">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Polje je opciono.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="req">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Polje je zahtevano.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="filterType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="boolean"/>
+            <xsd:enumeration value="date"/>
+            <xsd:enumeration value="number"/>
+            <xsd:enumeration value="string"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="searchControllType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="textField">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Obicno tekstualno polje. Moze se koristiti i za brojeve i datume,
+                        sve vrednosti ce biti automatski obradjene prema svom tipu.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="cbsInput">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Kombinacija dva tekstualna polja od kojih je jedno CBSInputField. Drugo polje se
+                        popunjava izabranom vrednoscu preko povezanog polja na koje 'gadja' prvo polje.
+                        Program sam odredjuje koje je drugo polje koje ce biti prikazano i to je konkretno
+                        'key-field' polje. Bitno je oba polja budu definisana u 'GUIMeta' tagu jer se uzimaju
+                        'caption' atributi tih polja za prikaz na formi.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="dateRange">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Predstavlja komponentu za unos datuma i to kako pojedinacne vrednosti tako i razmaka
+                        izmedju datuma. Ova komponenta podrzava prosirivost na set identicnih komponenti.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="list">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Predstavlja komponentu koja podatke prikazuje kao listu. Ispred svakog podatka u listi 
+                        nalazi se 'checkbox' te se izborom odredjenih podataka vrsi pretrazivanje po ovom polju.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="numberRange">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Komponenta koja je u potpunosti analogna 'dateRange' komponenti s tim sto je prilagodjena
+                        unosu brojeva.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="workflow">
+                <xsd:annotation>
+                    <xsd:documentation>
+                        Posebna komponenta koja se koristi iskljucivo za polja koja definisu novi 'workflow'.
+                        Ova komponenta se moze definisati samo za polje koje se povezuje sa poljem 'Step' iz entiteta
+                        'WFView'. Drugi uslov jeste da je nad posmatranim entitetom definsano i polje 'WFFinished' koje se
+                        takodje povezuje iz entiteta 'WFView'. I opet je naravno neophodno da su oba polja definisana u 
+                        'GUImeta' tagu posmatranog entiteta.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="searchParamValuesType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="([a-zA-Z0-9]+)(;[a-zA-Z0-9]+)*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="incrementType">
+        <xsd:restriction base="xsd:integer">
+            <xsd:enumeration value="1">
+                <xsd:annotation>
+                    <xsd:documentation> Koristi se na strani flexa i mora polje da se zove 'RB'.
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="2">
+                <xsd:annotation>
+                    <xsd:documentation> Max + 1, gleda takodje i sekundarne kljuceve tako da
+                        povecanje vrednosti zavisi i od sekundarnih kljuceva. (Samo jedan moze biti
+                        definisan za entitet) </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="3">
+                <xsd:annotation>
+                    <xsd:documentation> UID (Samo jedan moze biti definisan za entitet)
+                    </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="4">
+                <xsd:annotation>
+                    <xsd:documentation> Autoincrement baze. (Samo jedan moze biti definisan za
+                        entitet) </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="joinType">
+        <xsd:restriction base="xsd:integer">
+            <xsd:enumeration value="1">
+                <xsd:annotation>
+                    <xsd:documentation> Inner join </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="2">
+                <xsd:annotation>
+                    <xsd:documentation> Outer join </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="3">
+                <xsd:annotation>
+                    <xsd:documentation> Left outer join </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="4">
+                <xsd:annotation>
+                    <xsd:documentation> Right outer join </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="5">
+                <xsd:annotation>
+                    <xsd:documentation> Full join </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="7">
+                <xsd:annotation>
+                    <xsd:documentation> Full outer join </xsd:documentation>
+                </xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>   
+
+    <!-- KRAJ -->
+    <xsd:simpleType name="footerFuncType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="sum"/>
+            <xsd:enumeration value="min"/>
+            <xsd:enumeration value="max"/>
+            <xsd:enumeration value="average"/>
+            <xsd:enumeration value="count"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

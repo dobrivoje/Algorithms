@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<BookCatalogue xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='schemes/semaKnjige.xsd'>
+    <Book>
+        <Author>Dobrivoje</Author>
+        <Cost cenovnik="true">
+            <VPCena>1000</VPCena>
+            <MPCena>1200</MPCena>
+        </Cost>
+        <Title>Moja knjiga</Title>
+    </Book>
+    <Book>
+        <Author>neki autor</Author>
+        <Cost vpCena="true">
+            <VPCena>1200</VPCena>
+        </Cost>
+        <Cost cenovnik="true">
+            <MPCena>1200</MPCena>
+        </Cost>
+    </Book>
+</BookCatalogue>

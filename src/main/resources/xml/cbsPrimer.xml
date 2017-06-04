@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<ns1:entity_meta
+    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+    xmlns:ns1='http://xml.netbeans.org/schema/cbsschema'
+    xsi:schemaLocation='http://xml.netbeans.org/schema/cbsschema schemes/CBSMetaSchema.xsd'>
+    <meta>
+        <entity name="" class="" table="[cbspayroll].[dbo].[" validate="" init-method="" entity-order="" print-method="" custom-load="" custom-search="" entity-type="" use-sql-load="" virtual="" custom-store="" delete-reference-entity="" pre-store-operation="" service="">
+            <field name="" db-name="" type="" default="" validate-method="" validate-parameters="" lookup="" lookupid="" lookup-trans="" lookup-search="" lookup-set="" key-field="" lookup-alias="" persistent="" increment="" join-type="" primary-key="" secondary-key="" fixed-length="" delete-reference-key="" lookup-key-field="" session-value="" transient=""></field>
+            <sibling name="" entity-name="">
+                <key-map field-name="" related-field-name=""></key-map>
+            </sibling>
+            <child name="">
+                <key-map field-name="" related-field-name=""></key-map>
+            </child>
+            <operation name="" operationType="" siblingName="" class="" use-select="" place="" src="">
+                <key-map field-name="" related-field-name="" key-type="input"></key-map>
+            </operation>
+            <search-options field="" field-name=""></search-options>
+            <SQLCommand name="" src=""></SQLCommand>
+        </entity>
+    </meta>
+    <GUImeta>
+        <entity name="" layout="" filter-default="" caption="" deletable="" editable="" entity-type="" insertable="" multiple-selection="">
+            <field name="" caption="" caption-short="" display-list="" field-rep="" lookup-set="" lookup="" lookup-search="" default="" default-value="" section="" column-width="" filter="" footer="" footer-func="sum" authLevel="1" control-type="" grid-edit-selected="" popup-display-list=""></field>
+            <child name="" section="" caption="" show=""></child>
+            <extern-control name="" section=""></extern-control>
+        </entity>
+    </GUImeta>
+
+</ns1:entity_meta>

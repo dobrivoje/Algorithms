@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity_meta>
+    <meta>
+        <entity name="SubjekatKartica" virtual="true"> 
+            <field name="CCode" type="String" /> 
+            <field name="Datum" type="Date" />
+            <field name="IndInoValuta" type="Boolean" default="False"/>
+            <field name="IDSubjekat" type="String" lookup="Subjekat" lookupid="IDSubjekat" 
+                   lookup-trans="Naziv" key-field="NazivSubjekat" validatemethod=" loadSubjekat" join-type="3"/> 
+            <field name="NazivSubjekat" type="String" persistent="False"/>
+            <child name="SubjekatKarticaKonto" > 
+                <key-map field-name="CCode" related-fieldname="CCode"/>
+                <key-map field-name="Datum" related-fieldname="Datum"/>
+                <key-map field-name="IDSubjekat" relatedfield-name="IDSubjekat"/>
+                <key-map field-name="IndInoValuta" relatedfield-name="IndInoValuta"/>
+            </child>
+            <sibling name="Subjekat"> 
+                <key-map field-name="IDSubjekat" relatedfield-name="IDSubjekat"/>
+            </sibling>
+            <operation name="loadSubjekat" operationType="lookupoperation" siblingName="Subjekat">
+                <key-map field-name="NazivSubjekat" relatedfield-name="Naziv"/>
+                <key-map field-name="IDSubjekat" relatedfield-name="IDSubjekat"/>
+            </operation>
+            <operation name="ucitaj" operationType="initialize" />
+        </entity>
+    </meta>
+    <GUImeta> 
+        <entity name="SubjekatKartica" caption="Kartica subjekta" entitytype="report" > 
+            <field name="CCode" caption="CCode" displaylist="False" field-rep="hid" /> 
+            <field name="Datum" display-list="False" fieldrep="req" default="now" section="filterA"/>
+            <field name="IDSubjekat" caption="Sifra subjekat" display-list="False" field-rep="req" section="filterA"/>
+            <field name="NazivSubjekat" caption="Naziv" displaylist="False" field-rep="disp" section="filterA" />
+            <field name="IndInoValuta" caption="Prikaz u InoValuti" display-list="False" field-rep="opt" section="filterA" />
+            <child name="SubjekatKarticaKonto" />
+        </entity>
+    </GUImeta>
+</entity_meta>

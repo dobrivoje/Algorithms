@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FileStruct xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='schemes/fileStructure.xsd'>
+    <Dir name="C:\">
+        <File>hiber.sys</File>
+        <Dir name="Windows" />
+        <Dir name="Users">
+            <File>sysFile1</File>
+            <File>sysFile2</File>
+            <Dir name="root">
+                <File>Neki fajl1</File>
+                <File>Neki fajl2</File>
+                <File>Neki fajl3</File>
+                <Dir name="d1"></Dir>
+                <Dir name="d2"></Dir>
+                <Dir name="d3">
+                    <Dir name="subDir1"></Dir>
+                    <Dir name="subDir2">
+                        <Dir name="subSubDir1">
+                            <File>name1</File>
+                            <File>name2</File>
+                        </Dir>
+                    </Dir>
+                    <Dir name="subDir3"></Dir>
+                </Dir>
+                        
+            </Dir>
+        </Dir>
+    </Dir>
+</FileStruct>

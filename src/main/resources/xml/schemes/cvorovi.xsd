@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="text"/>
+    <xsl:template match="/contracts">
+        <xsl:apply-templates select="contract"/>
+    </xsl:template>
+    <xsl:template match="contract">
+        <xsl:value-of select="supplier"/>
+        <xsl:text> </xsl:text>
+        <xsl:value-of select="price"/>
+        <xsl:apply-templates select="subcontracts"/>
+    </xsl:template>
+</xsl:stylesheet>
