@@ -1,10 +1,10 @@
 package algs.J9DSA;
 
 import algs.Util.Utils;
+
 import java.util.List;
 
 /**
- *
  * @author д06ри, dobri7@gmail.com
  */
 public class BinarySearch {
@@ -30,12 +30,12 @@ public class BinarySearch {
     }
 
     public static void main(String[] args) throws Exception {
-        List<Integer> L = Utils.getRandomList(10, 10);
-        List<Integer> L2 = Utils.getRandomList(10, 10, false);
+        List<Integer> L = Utils.getInefficientRandomList(10, 10, false);
+        List<Integer> L2 = Utils.getInefficientRandomList(10, 10, false);
 
         long t0 = System.currentTimeMillis();
         System.err.println("time started!");
-        List<Integer> L3 = Utils.getSortedRandomList(20000, 20000);
+        List<Integer> L3 = Utils.getSortedRandomList(20000, 20000, false);
         System.err.println("time ended -> " + (System.currentTimeMillis() - t0));
 
         System.err.println("L: " + L);
@@ -46,8 +46,8 @@ public class BinarySearch {
 
         int testValue = L3.get(25);
         System.err.println("Binary search. Value= "
-                + testValue
-                + ", found ? " + (binarySearch(L3.toArray(new Integer[0]), testValue)));
+                               + testValue
+                               + ", found ? " + (binarySearch(L3.toArray(new Integer[0]), testValue)));
     }
 
 }

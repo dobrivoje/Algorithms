@@ -1,22 +1,17 @@
 package algs.Util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-/**
- *
- * @author root
- */
 public class Utils {
 
-    public class MyMap<K, V> {
+    public static class MyMap<K, V> {
 
-        public <K, V> Map<K, V> getMap() {
+        public Map<K, V> getMap() {
             return new HashMap<>();
         }
     }
@@ -26,52 +21,58 @@ public class Utils {
         return (int) (limit * Math.random());
     }
 
-    public static List<Integer> getRandomList(int limit, int capacity, boolean repeatAllowed) throws Exception {
+    public static List<Integer> getInefficientRandomList(int limit, int capacity, boolean repeatAllowed, boolean showErrors) {
         List<Integer> L = new ArrayList<>();
 
         if (capacity < 1) {
-            throw new Exception("Capacity must be > 1 !");
+            throw new RuntimeException("Capacity must be > 1 !");
         }
 
         if (limit < capacity) {
-            throw new Exception("Upper limit must be lower than Capacity !");
+            throw new RuntimeException("Upper limit must be lower than Capacity !");
         }
 
+        int dup = 0;
         if (!repeatAllowed) {
-            int dup = 0;
             for (int i = 0; i < capacity; i++) {
                 boolean goRepeat = false;
 
                 do {
                     int nv = randomInt(limit);
+                    goRepeat = L.contains(nv);
 
                     if (L.contains(nv)) {
-                        goRepeat = true;
-                        System.err.println("Duplicate ! Value=" + nv + "#" + (++dup));
-                    } else {
+                        dup++;
+                        if (showErrors) System.err.println("Duplicate ! Value=" + nv + "#" + (dup));
+                    } else
                         L.add(nv);
-                        goRepeat = false;
-                    }
                 } while (goRepeat);
             }
-        } else {
-            for (int i = 0; i < capacity; i++) {
-                L.add(randomInt(limit));
-            }
-        }
+        } else for (int i = 0; i < capacity; i++) L.add(randomInt(limit));
+
+        if (!showErrors) System.err.println("Miss rate : " + dup + "/" + capacity);
 
         return L;
     }
 
-    public static List<Integer> getRandomList(int limit, int capacity) throws Exception {
-        return Utils.getRandomList(limit, capacity, false);
+    public static List<Integer> getInefficientRandomList(int limit, int capacity, boolean showErrors) {
+        return Utils.getInefficientRandomList(limit, capacity, false, showErrors);
     }
 
-    public static List<Integer> getSortedRandomList(int limit, int capacity) throws Exception {
-        List<Integer> L = getRandomList(limit, capacity, false);
+    public static void getInefficientRandomList(int limit, int capacity, List<Integer> result, boolean showErrors) {
+        result.addAll(Utils.getInefficientRandomList(limit, capacity, false, showErrors));
+    }
+
+    public static List<Integer> getSortedRandomList(int limit, int capacity, boolean showErrors) {
+        List<Integer> L = getInefficientRandomList(limit, capacity, false, showErrors);
         Collections.sort(L);
 
         return L;
+    }
+
+    public static void getRandomList(int capacity, List<Integer> result) {
+        result = IntStream.range(1, capacity + 1).boxed().collect(Collectors.toList());
+        Collections.shuffle(result);
     }
 
     public static void main(String[] args) {
@@ -79,14 +80,14 @@ public class Utils {
         List<Integer> L2;
 
         try {
-            L = getRandomList(10, 10);
+            L = getInefficientRandomList(10, 10, false);
             System.err.println(L);
         } catch (Exception ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
         }
 
         try {
-            L2 = Utils.getRandomList(200, 50, true);
+            L2 = Utils.getInefficientRandomList(200, 50, true, false);
             System.err.println(L2);
         } catch (Exception ex) {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -95,4 +96,34 @@ public class Utils {
     }
     //</editor-fold>
 
+    public static void executionTimeInUnitFor(Runnable task, String methodName, TimeUnit timeUnit) {
+        long t0 = System.nanoTime();
+        task.run();
+        long dt = (System.nanoTime() - t0) / timeUnit.toNanos(1);
+        System.err.println("Time spent on method [" + methodName + "] " + dt + " " + timeUnit.toString().toLowerCase());
+    }
+
+    public static void executionTime(Runnable task, String methodName) {
+        long t0 = System.nanoTime();
+        task.run();
+        long dt = System.nanoTime() - t0;
+
+        String timeStr;
+        if (dt / 1_000 < 1) timeStr = " ns.";
+        else if (dt / 1_000 >= 1 && dt / 1_000 < 999) {
+            timeStr = " us.";
+            dt /= 1000;
+        } else if (dt / 1_000_000 >= 1 && dt / 1_000_000 < 999) {
+            timeStr = " ms.";
+            dt /= 1000_000;
+        } else if (dt / 1_000_000_000 >= 1) {
+            timeStr = " secs.";
+            dt /= 1000_000_000;
+        } else {
+            long mins = TimeUnit.SECONDS.toMinutes(dt / 1000_000_000);
+            timeStr = " more than " + mins + " seconds...";
+        }
+
+        System.err.println("Time spent on [" + methodName + "] " + dt + timeStr);
+    }
 }

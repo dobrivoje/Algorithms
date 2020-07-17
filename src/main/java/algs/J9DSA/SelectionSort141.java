@@ -1,11 +1,12 @@
 package algs.J9DSA;
 
 import algs.Util.Utils;
-import java.util.Arrays;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
- *
  * @author д06ри, dobri7@gmail.com
  */
 public class SelectionSort141 {
@@ -46,20 +47,18 @@ public class SelectionSort141 {
         selectionSort(array, 0);
     }
 
-    public static void main(String[] args) throws Exception {
-        List<Integer> L = Utils.getRandomList(50000, 200);
-        Integer[] IN = L.toArray(new Integer[0]);
+    public static void main(String[] args) throws InterruptedException {
+        Utils.executionTime(() -> Utils.getInefficientRandomList(10_000, 10_000, false, false), "Utils.getInefficientRandomList");
 
-        System.err.println("Unsorted array -> " + Arrays.toString(IN));
-        long t0 = System.currentTimeMillis();
-        System.err.println("time started at: " + t0);
+        List<Integer> L1 = new ArrayList<>();
+        Utils.executionTime(() -> Utils.getRandomList(10_000, L1), "Utils.getRandomList");
+        // System.err.println(Arrays.toString(L2.toArray()));
 
-        selectionSort(IN);
+        Integer[] rndInts = L1.toArray(new Integer[0]);
 
-        long t1 = System.currentTimeMillis();
-        System.err.println("time ended at: " + t1);
-
-        System.err.println("Sorted array -> " + Arrays.toString(IN));
+        // System.err.println("Unsorted array -> " + Arrays.toString(IN));
+        Supplier<Integer> s = () -> 12;
+        Utils.executionTime(() -> selectionSort(rndInts), "selectionSort");
+        // System.err.println("Sorted array -> " + Arrays.toString(IN));
     }
-
 }
