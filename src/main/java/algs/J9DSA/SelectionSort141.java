@@ -48,10 +48,11 @@ public class SelectionSort141 {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Utils.executionTime(() -> Utils.getInefficientRandomList(10_000, 10_000, false, false), "Utils.getInefficientRandomList");
+        int noOfElements = 20_000;
+        Utils.executionTime(() -> Utils.getInefficientRandomList(noOfElements, noOfElements, false, false), "Utils.getInefficientRandomList");
 
         List<Integer> L1 = new ArrayList<>();
-        Utils.executionTime(() -> Utils.getRandomList(10_000, L1), "Utils.getRandomList");
+        Utils.executionTime(() -> Utils.getRandomList(noOfElements, L1), "Utils.getRandomList");
         // System.err.println(Arrays.toString(L2.toArray()));
 
         Integer[] rndInts = L1.toArray(new Integer[0]);
