@@ -33,7 +33,7 @@ public class TableCreator {
             List<String> colDefs = new ArrayList<>();
             
             for (Field f : cl.getDeclaredFields()) {
-                String colName = null;
+                String colName;
                 Annotation[] anns = f.getDeclaredAnnotations();
                 if (anns.length > 0) {
                     if (anns[0] instanceof SQLInteger) {

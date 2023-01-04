@@ -79,7 +79,23 @@ public class FibonacciCalculator {
         }
     }
 
+    public static Integer dajRandom() {
+        try {
+            for (int i = 0; i < 5; i++) {
+                if (i%2==0) throw new Exception("666");
+                else
+                    return 223;
+            }
+        } catch (Exception e) {
+            System.err.println(">>> greška : "+e.getMessage() );
+        }
+
+        return 1117;
+    }
+
     public static void main(String args[]) {
+        int xx = dajRandom();
+        System.err.println("main >>> "+xx);
 
         System.err.format("%5.3f", (double) 20_633_239 / 12_752_043);
         System.err.println();
